@@ -7,7 +7,11 @@ date: "18 Nov, 2021"
 output: 
   beamer_presentation:
     colortheme: "frigatebird"
-
+header-includes:
+  - \usepackage{tikz}
+  - \usetikzlibrary{arrows,calc,positioning,shapes.geometric}
+  - \usepackage{pgfplots}
+  - \pgfplotsset{compat=1.15}
 ---
 
 ```{r setup, include=FALSE}
@@ -23,24 +27,32 @@ knitr::opts_chunk$set(echo = FALSE)
 
 > Summary index of an underlying distribution
 
-## Motivation
+\pause
 
-- Quality vs quantity of years?
-- Hidden inequality?
-- Process?
-- Labor force (GALI question)?
-- Advocacy?
+> What's *health* anyway?
 
-## Monitoring
+\pause
 
-\begin{center}
-\includegraphics[width=11cm]{Healthy-life-years-at-birth_04_04_20.png}
-\end{center}
+> model as a stock or a process?
 
-## ...
+<!-- ## Motivation -->
 
-\Large
-> What about intervention?
+<!-- - Quality vs quantity of years? -->
+<!-- - Hidden inequality? -->
+<!-- - Process? -->
+<!-- - Labor force (GALI question)? -->
+<!-- - Advocacy? -->
+
+<!-- ## Monitoring -->
+
+<!-- \begin{center} -->
+<!-- \includegraphics[width=11cm]{Healthy-life-years-at-birth_04_04_20.png} -->
+<!-- \end{center} -->
+
+<!-- ## ... -->
+
+<!-- \Large -->
+<!-- > What about intervention? -->
 
 <!-- ## Intervention? -->
 
@@ -59,10 +71,10 @@ knitr::opts_chunk$set(echo = FALSE)
 <!-- \footnotesize -->
 <!-- Goodhart, Charles (1975). "Problems of Monetary Management: The U.K. Experience". Papers in Monetary Economics. 1. Sydney: Reserve Bank of Australia. -->
 
-## Anything to discuss?
 
 ## Measures
 
+\Huge
 - Sullivan
 - Multistate
 
@@ -104,7 +116,7 @@ tibble(age = seq(50,108,by=2),
         legend.background = element_blank(),
         axis.ticks = element_blank(),
         legend.key = element_blank(),
-        axis.title=element_text(size=14,face="bold"),
+        axis.title = element_text(size=14,face="bold"),
         axis.text =  element_text(size = 12))
 # a <- seq(50,108,by=2)
 # # survival curve
@@ -159,11 +171,13 @@ mutate(transition = case_when(
   transition == "m22" ~ "U->U",
   transition == "m24" ~ "U->D",
 )) %>% 
+  separate(transition, into = c("from","to"),sep = "->") %>% 
   ggplot(aes(x = age,
              y = probability,
-             color = transition, 
-             group = transition)) +
-  geom_line() +
+             color = to, 
+             lty = from,
+             group = interaction(from,to))) +
+  geom_line(size = 2) +
   dark_theme_gray() + 
   theme(
         plot.background = element_rect(fill = "grey10"),
@@ -172,9 +186,38 @@ mutate(transition = case_when(
         panel.grid.minor = element_line(color = "grey30", size = 0.2),
         legend.background = element_blank(),
         axis.ticks = element_blank(),
-        legend.key = element_blank())
+        legend.key = element_blank(),
+        axis.title = element_text(size=14,face="bold"),
+        axis.text =  element_text(size = 12))
 
 ```
+
+## State space-diagrams
+
+\small
+\begin{center}
+\begin{tikzpicture}[scale=0.45, ->,>=stealth',shorten >=1pt,auto,node distance=2.5cm,
+  thick,main node/.style={circle,draw},square/.style={regular polygon,regular polygon sides=4}]
+
+  \node[main node] (1) at (0,0) [square,draw]{Healthy};
+  \node[main node] (2) at (8,-5) [square,draw] {Disabled};
+  \node[main node] (3) at (3,-12) [square,draw] {Dead};  
+
+  \path[every node/.style={font=\sffamily\small}]
+    
+    (1) edge node [left] {} (3)
+   	(1) edge [bend right] node [left] {} (2)
+    
+    (2) edge node [right] {} (3)
+    (2) edge [bend right] node [left] {} (1)
+
+    (1) edge [loop left] node {} (1)
+    (2) edge [loop right] node {} (2)
+    (3) edge [loop below] node {} (3)
+ 
+    ;
+\end{tikzpicture}
+\end{center}
 
 
 ## Properties
@@ -183,17 +226,17 @@ mutate(transition = case_when(
 \includegraphics[width=11cm]{chuttersnap-gts_Eh4g1lk-unsplash.jpg}
 \end{center}
 
-## Properties
+<!-- ## Properties -->
 
-\begin{center}
-\includegraphics[width=11cm]{josh-withers-3mY4U7FIevc-unsplash.jpg}
-\end{center}
+<!-- \begin{center} -->
+<!-- \includegraphics[width=11cm]{josh-withers-3mY4U7FIevc-unsplash.jpg} -->
+<!-- \end{center} -->
 
-## Properties
+<!-- ## Properties -->
 
-\begin{center}
-\includegraphics[width=11cm]{nii-sx7kn7GNf6E-unsplash.jpg}
-\end{center}
+<!-- \begin{center} -->
+<!-- \includegraphics[width=11cm]{nii-sx7kn7GNf6E-unsplash.jpg} -->
+<!-- \end{center} -->
 
 ## Variants
 
@@ -218,12 +261,12 @@ mutate(transition = case_when(
 
 - Cohorts
 - Stationary populations
-  - reversibility
   
 ## Further training
 
-- maybe early December Jutta Gampe Multistate course. Otherwise in 2021
-- maaaybe Spring Hal Caswell matrix pop course. 
+- Jutta Gampe Multistate course possible late May (check PHDS website in March)
+- Hal Caswell matrix pop course will eventually return
+- REVES meetings have workshops
 
 ## Special conferences
 
@@ -233,7 +276,7 @@ mutate(transition = case_when(
 ## Local technical resources
 
 - Transition probs: J. Gampe, A. Carollo, D. Schneider, A. Lorenti, C. Dudel
-- Markov measures: C. Dudel, me
+- Markov measures: C. Dudel, me, C. Bohk-Ewald
 
 ## Related things that I work on
 
