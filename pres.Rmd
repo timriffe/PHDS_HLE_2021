@@ -2,7 +2,7 @@
 title: "Health Expectancy"
 author: |
   | Tim Riffe
-  | MPIDR
+  | EHU/UPV, Ikerbasque, MPIDR
 date: "18 Nov, 2021"
 output: 
   beamer_presentation:
@@ -247,6 +247,8 @@ mutate(transition = case_when(
 - Continuous
   - Matrix algebra
   - Differential equations
+  
+<https://jamboard.google.com/d/1UJKc7ULzstKyAfGL3cbUkRsHZ86uQUvrLlSYdFMA-GA/edit?usp=sharing>  
   
 ## Considerations
 
