@@ -1,4 +1,4 @@
-library(tidyverse)
+library(tidyverse) # install.packages("tidyverse")
 library(here)
 # some custom functions
 source("Functions.R")
@@ -8,7 +8,7 @@ TR <- read_csv(here("Data","TRv6.csv"))
 
 # take a peek: we have many strata
 head(TR)
-
+TR$edu %>% unique()
 # define a subset
 TRsub <- TR %>% filter(sex == "f",
                        edu == "terciary",
@@ -47,6 +47,16 @@ for (i in 1:n){
   Hx[i+1] <- Hx[i] * hhx[i] + Ux[i] * uhx[i]
   Ux[i+1] <- Ux[i] * uux[i] + Hx[i] * hux[i]
 }
+Hx2 <- Hx * 0
+Ux2 <- Ux * 0
+Hx2[1] <- init[1] * interval
+Ux2[1] <- init[2] * interval
+
+for (i in 1:n){
+  Hx2[i+1] <- Hx2[i] * (1 - hdx[i] - hux[i]) + Ux2[i] * uhx[i]
+  Ux2[i+1] <- Ux2[i] * (1 - udx[i] - uhx[i]) + Hx2[i] * hux[i]
+}
+Hx - Hx2
 
 ages <- seq(48,110,by=2)
 HLT <- data.frame(
@@ -65,7 +75,7 @@ HLT <- data.frame(
 # So you can calculate actual transitions as you please
 
 # For example:
-
+sum(Hx)
 HLT %>% 
   mutate(DU = Ux * udx,
          DH = Hx * hdx) %>% 
@@ -80,6 +90,8 @@ HLT %>%
              group = `Health status`)) +
   geom_line()
   
+
+plot((Hx + Ux)/2, type = 'l')
 # Question: let's say you took those two deaths distributions, 
 # can you do distribution statistics on them? Does it change the
 # interpretation of anything, knowing that these are mixing populations?
@@ -134,7 +146,7 @@ IDLT <- function(dat, init, interval = 2){
 
 
 
-
+sum(Hx)
 
 
 

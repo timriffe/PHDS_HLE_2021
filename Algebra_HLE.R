@@ -42,13 +42,14 @@ U <- u2U(HH = HH, # healthy to healthy
          HU = HU, # healthy to unhealthy
          UH = UH, # unhealthy to healthy
          UU = UU) # unhealthy to unhealthy
+
 U %>% View()
 # so far this is all matrix architecture, now we have 
 # the transient matrix, which we can transform to the 
 # fundamental matrix
 
-N <- U2N(U)
-
+N <- U2N(U,  interval = 2)
+# (I - U) ^{-1} = solve(I - U)
 # This is where we stop with the algebra and move to 
 # tidyverse for book-keeping.
 
@@ -70,11 +71,10 @@ N50 <-
            sep = "::",
            into = c("from","age1"),
            convert = TRUE) %>% 
-  filter(age1 == 50,
+  filter(age1 == 48,
          age2 > age1,
-         from != "D",
          to != "D")
-
+N50
 
 # calculate HLE and ULE from it:
 HLE <-
@@ -85,7 +85,7 @@ HLE <-
          Ex = Ex_cond * init) %>% 
   group_by(to) %>% 
   summarize(Ex = sum(Ex))
-  
+HLE$Ex[1]
 # -------------------------------------------
 # Some extra code for weighting together
 # an average survival curve and prevalence,

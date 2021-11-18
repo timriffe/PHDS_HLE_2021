@@ -33,7 +33,7 @@ U <- u2U(HH = HH, # healthy to healthy
 # this turns it into a stochastic matrix (colSums = 1)
 U <- cbind(U, 0)
 U <- rbind(U, 1 - colSums(U)) # death probabilities are 1-sum(transient_probabilities) ...
-  
+
 # Need to name the dims, concatenating state and age
 age_state   <- c(outer(seq(48, 110, by = 2), paste0("::", c("H","U")), paste0), "Dead")
 (dimnames(U) <- list(to = age_state, from = age_state))
@@ -86,7 +86,8 @@ RHRS                   <- cbind(RHRS_H, RHRS_U)
 
 # only need the states, don't need the age part of the labels
 RHRS_clean             <- gsub(".*:","",RHRS)
-  
+  dim(RHRS_clean)
+  RHRS_clean[,1]
 a                    <- seq(50, 110, by = 2)
 rownames(RHRS_clean) <- a
 colnames(RHRS_clean) <- 1:ncol(RHRS_clean)

@@ -30,7 +30,7 @@ polygon(c(a, 108, 50), c(lx * pix, 0,0), col = "#76a0e3")
 # color part of it unhealthy
 polygon(c(a, rev(a)), c(lx * pix, rev(lx)), col = "#b57412")
 
-
+plot(a, pix)
 
 (HLE <- sum(pix * lx))        # same HLE
 (ULE <- sum((1 - pix) * lx))  # same ULE
