@@ -1,0 +1,249 @@
+---
+title: "Health Expectancy"
+author: |
+  | Tim Riffe
+  | MPIDR
+date: "18 Nov, 2021"
+output: 
+  beamer_presentation:
+    colortheme: "frigatebird"
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 
+
+\Large
+> Average number of years lived in good health
+
+\pause
+
+> Summary index of an underlying distribution
+
+## Motivation
+
+- Quality vs quantity of years?
+- Hidden inequality?
+- Process?
+- Labor force (GALI question)?
+- Advocacy?
+
+## Monitoring
+
+\begin{center}
+\includegraphics[width=11cm]{Healthy-life-years-at-birth_04_04_20.png}
+\end{center}
+
+## ...
+
+\Large
+> What about intervention?
+
+<!-- ## Intervention? -->
+
+<!-- Campell's Law -->
+
+<!-- > “The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures and the more apt it will be to distort and corrupt the social processes it is intended to monitor” -->
+
+<!-- \footnotesize -->
+<!-- Campbell, D. T. (1979). Assessing the impact of planned social change. Evaluation and program planning, 2(1), 67-90. -->
+
+<!-- \pause -->
+<!-- Goodhart's Law -->
+
+<!-- > “Any observed statistical regularity will tend to collapse once pressure is placed upon it for control purposes.” -->
+
+<!-- \footnotesize -->
+<!-- Goodhart, Charles (1975). "Problems of Monetary Management: The U.K. Experience". Papers in Monetary Economics. 1. Sydney: Reserve Bank of Australia. -->
+
+## Anything to discuss?
+
+## Measures
+
+- Sullivan
+- Multistate
+
+## Sullivan 
+
+```{r, message = FALSE, warn = FALSE, echo = FALSE, out.width='70%', out.height='70%'}
+library(tidyverse)
+library(ggdark)
+pix <- 1-c(0.942832933525023, 0.925366777629796, 0.913878052953308, 0.905779576715131, 
+         0.899819586082213, 0.895228598060479, 0.891415053920396, 0.887843431788832, 
+         0.883977734168754, 0.879243670749217, 0.872988101030959, 0.864422353013589, 
+         0.85253805474243, 0.836000848599391, 0.813416659727759, 0.783638907018477, 
+         0.745769572698891, 0.699353730294645, 0.64468449536391, 0.583095062238541, 
+         0.5170619612345, 0.449955803009552, 0.385423852181739, 0.326631969263549, 
+         0.275728924251826, 0.23377510423577, 0.201092734009695, 0.17782145726523, 
+         0.164539328404487, 0.163055237515445)
+
+lx <- c(2, 1.98744304104249, 1.97166480704484, 1.95251099982402, 1.92979047491913, 
+  1.90327639864472, 1.87269654546685, 1.83771283501313, 1.7978930617532, 
+  1.75267423877303, 1.70131782289022, 1.64285829147167, 1.57605111088635, 
+  1.49933944580084, 1.41094952851575, 1.30916546330524, 1.19275620234035, 
+  1.06156436022103, 0.917173279730504, 0.763469971998791, 0.606832911763207, 
+  0.455676937888572, 0.319219834302956, 0.205583276597247, 0.119696424658899, 
+  0.0618521812086196, 0.0278148278482655, 0.0106670648655719, 0.00341876365030296, 
+  0.000898335418648003) / 2
+
+tibble(age = seq(50,108,by=2),
+       pix = pix,
+       lx = lx) %>% 
+  ggplot(aes(x= age, y = lx)) +
+  geom_line(color = "white") +
+  geom_line(inherit.aes = FALSE, mapping = aes(x=age,y = pix), color = "red") +
+ dark_theme_gray() + 
+  theme(
+        plot.background = element_rect(fill = "grey10"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        axis.title=element_text(size=14,face="bold"),
+        axis.text =  element_text(size = 12))
+# a <- seq(50,108,by=2)
+# # survival curve
+# pdf("test.pdf",width = 5, height = 5)
+# par(mai=c(.5,.6,.1,.1))
+# plot(a, lx, type = 'n', las = 2,
+#      bg="white",
+#      col.main="white",
+#      xlab = "",
+#      axes = FALSE,
+#      ylab = "")
+# axis(1,col = "white",col.ticks = "white",col.axis ="white")
+# axis(2,col = "white",col.ticks="white",col.axis ="white",las=1)
+# # color part of it healthy
+# lines(a, 1- pix, col = "red", lwd = 2)
+# lines(a, lx, col = "white", lwd = 2)
+# dev.off()
+```
+
+<!-- \begin{center} -->
+<!-- \includegraphics[scale=.7]{test.pdf} -->
+<!-- \end{center} -->
+
+- $HLE(x) = \int l(x)\pi(x) \mathrm{d}x$
+- List properties \& biases (5 min)
+
+## Multistate
+
+<https://temery86.github.io/FullHistory/>
+
+\begin{center}
+\includegraphics[width=11cm]{multistate_animation.png}
+\end{center}
+
+## Multistate
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(tidyverse)
+library(ggdark)
+read_csv(here::here("Data","TRv6.csv")) %>% 
+filter(sex == "f",
+       edu == "terciary",
+       time == 1996) %>% 
+pivot_longer(m11:m24, 
+             names_to = "transition", 
+             values_to = "probability") %>% 
+mutate(transition = case_when(
+  transition == "m11" ~ "H->H",
+  transition == "m12" ~ "H->U",
+  transition == "m14" ~ "H->D",
+  transition == "m21" ~ "U->H",
+  transition == "m22" ~ "U->U",
+  transition == "m24" ~ "U->D",
+)) %>% 
+  ggplot(aes(x = age,
+             y = probability,
+             color = transition, 
+             group = transition)) +
+  geom_line() +
+  dark_theme_gray() + 
+  theme(
+        plot.background = element_rect(fill = "grey10"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank())
+
+```
+
+
+## Properties
+
+\begin{center}
+\includegraphics[width=11cm]{chuttersnap-gts_Eh4g1lk-unsplash.jpg}
+\end{center}
+
+## Properties
+
+\begin{center}
+\includegraphics[width=11cm]{josh-withers-3mY4U7FIevc-unsplash.jpg}
+\end{center}
+
+## Properties
+
+\begin{center}
+\includegraphics[width=11cm]{nii-sx7kn7GNf6E-unsplash.jpg}
+\end{center}
+
+## Variants
+
+- Discrete
+  - Matrix algebra *
+  - Lifetable *
+  - Simulation *
+- Continuous
+  - Matrix algebra
+  - Differential equations
+  
+## Considerations
+
+- Initial conditions?
+- Mid-interval approximations?
+- Strata or state?
+- Memoryless?
+- Rate fluctuations?
+- Health comparability?
+  
+## Equivalencies
+
+- Cohorts
+- Stationary populations
+  - reversibility
+  
+## Further training
+
+- maybe early December Jutta Gampe Multistate course. Otherwise in 2021
+- maaaybe Spring Hal Caswell matrix pop course. 
+
+## Special conferences
+
+- IAPHS <https://iaphs.org/>
+- REVES <https://reves.site.ined.fr/en/home/about_reves/>
+
+## Local technical resources
+
+- Transition probs: J. Gampe, A. Carollo, D. Schneider, A. Lorenti, C. Dudel
+- Markov measures: C. Dudel, me
+
+## Related things that I work on
+
+- Within-inequality in Sullivan setting
+- Decomposition of discrete multistate
+- Other within-lifecourse duration measures
+- Time perspectives on compression and ageing
+
+## Break, then we code!
+
+\begin{center}
+\includegraphics[width=9cm]{is_it_worth_the_time.png}
+\end{center}
