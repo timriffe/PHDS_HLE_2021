@@ -30,10 +30,14 @@ polygon(c(a, 108, 50), c(lx * pix, 0,0), col = "#76a0e3")
 # color part of it unhealthy
 polygon(c(a, rev(a)), c(lx * pix, rev(lx)), col = "#b57412")
 
-plot(a, pix)
-
 (HLE <- sum(pix * lx))        # same HLE
 (ULE <- sum((1 - pix) * lx))  # same ULE
+dput(c(HLE, ULE))
+c(28.2758869643443, 5.61608147350015)
+# copied from Alegebra_HLE.R, exact
+c(28.2758869643443, 5.61608147350015)
+# copied from (age 50) ID_HLE.R, exact
+c(28.2758869643443, 5.61608147350015)
 
 
 # really there's nothing more to this

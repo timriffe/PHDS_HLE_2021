@@ -6,7 +6,7 @@ library(tidyverse)
 source("Functions.R")
 
 # Read in the data (Daniel Schneider gave these to me, haha)
-TR <- read_csv("TRv6.csv") 
+TR <- read_csv("Data/TRv6.csv") 
 
 # take a peek: we have many strata
 head(TR) %>% view()
@@ -71,7 +71,7 @@ N50 <-
            sep = "::",
            into = c("from","age1"),
            convert = TRUE) %>% 
-  filter(age1 == 48,
+  filter(age1 == 50,
          age2 > age1,
          to != "D")
 N50
@@ -80,12 +80,14 @@ N50
 HLE <-
   N50 %>% 
   group_by(from, to) %>% 
-  summarize(Ex_cond = sum(time)) %>% 
+  summarize(Ex_cond = sum(time), .groups = "drop") %>% 
   mutate(init = ifelse(from == "H", init[1], init[2]),
          Ex = Ex_cond * init) %>% 
   group_by(to) %>% 
-  summarize(Ex = sum(Ex))
-HLE$Ex[1]
+  summarize(Ex = sum(Ex), .groups = "drop")
+
+HLE$Ex
+c(28.2758869643443, 5.61608147350015)
 # -------------------------------------------
 # Some extra code for weighting together
 # an average survival curve and prevalence,
@@ -107,7 +109,8 @@ pix <-
   mutate(init = ifelse(from == "H", init["H"], init["U"]),
          time2 = time * init) %>% 
   group_by(to, age2) %>% 
-  summarize(time2 = sum(time2)) %>% 
+  summarize(time2 = sum(time2),
+            .groups = "drop") %>% 
   pivot_wider(names_from = to, values_from = time2) %>% 
   mutate(pix = H / (H + U)) %>% 
   pull(pix)
