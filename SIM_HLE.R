@@ -98,7 +98,7 @@ colnames(RHRS_clean) <- 1:ncol(RHRS_clean)
 # see the first one:
 (RHRS_clean[,1] == "H") %>% sum() %>% '*'(2)
 
-# Calculate HLE and ULE (compare w values in Sullivan.R)
+# Calculate HLE and ULE (compare w values in Sullivan.R, increase N to get closer)
 (HLE <- sum(RHRS_clean == "H") / N  * 2)
 (ULE <- sum(RHRS_clean == "U") / N  * 2)
 
