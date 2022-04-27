@@ -22,7 +22,7 @@ UH <- pi2u(pivec = TRsub$m21, from = "U", to = "H")
 UU <- pi2u(pivec = TRsub$m22, from = "U", to = "U")
 
 
-# All edu females
+# terciary edu females
 U <- u2U(HH = HH, # healthy to healthy
          HU = HU, # healthy to unhealthy
          UH = UH, # unhealthy to healthy
@@ -69,20 +69,23 @@ Ns <- round(init * N)
 set.seed(2021)
 
 RHRS_H  <- replicate(Ns["H"],
-                     rmarkovchain(n = 31, 
+                     rmarkovchain(n = 30, 
                                   object = mcHLE, 
-                                  t0 = "48::H", 
+                                  t0 = "50::H", 
                                   parallel = TRUE)
 ) 
 RHRS_U  <- replicate(Ns["U"],
-                     rmarkovchain(n = 31, 
+                     rmarkovchain(n = 30, 
                                   object = mcHLE, 
-                                  t0 = "48::U", 
+                                  t0 = "50::U", 
                                   parallel = TRUE)
 ) 
 
-# stick together in one population
-RHRS                   <- cbind(RHRS_H, RHRS_U)
+# stick together in one population,
+# note, t0 from the random generator is not included
+# in the trajectories, so we need to append it to be 
+# consistent with the other approaches.
+RHRS                   <- cbind(rbind("H",RHRS_H), rbind("U",RHRS_U))
 
 # only need the states, don't need the age part of the labels
 RHRS_clean             <- gsub(".*:","",RHRS)
@@ -95,10 +98,9 @@ colnames(RHRS_clean) <- 1:ncol(RHRS_clean)
 # see the first one:
 (RHRS_clean[,1] == "H") %>% sum() %>% '*'(2)
 
-# Calculate totals?
-
-(HLE <- sum(RHRS_clean == "H") / 1e4 * 2)
-(ULE <- sum(RHRS_clean == "U") / 1e4 * 2)
+# Calculate HLE and ULE (compare w values in Sullivan.R)
+(HLE <- sum(RHRS_clean == "H") / N  * 2)
+(ULE <- sum(RHRS_clean == "U") / N  * 2)
 
 # But this approach gives lots of goodies for free
 
