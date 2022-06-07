@@ -12,8 +12,8 @@ pi2u <- function(pivec,
   # the way these probabilities were estimated and labelled.
   # to technically our first one goes from 48 to 50, not from 50 to 52.
   ages          <- ((0:n) * interval) + start_age - interval
-  from_names    <- c(paste(from, ages[-length(ages)], sep = "::"),"D::Inf")
-  to_names      <- c(paste(to, ages[-1], sep = "::"), "D::Inf")
+  from_names    <- paste(from, ages, sep = "::")
+  to_names      <- paste(to, ages, sep = "::")
   dimnames(out) <- list(to_names, from_names)
   out
 }

@@ -53,44 +53,7 @@ for (i in 1:n){
   Hx[i+1] <- Hx[i] * hhx[i] + Ux[i] * uhx[i]
   Ux[i+1] <- Ux[i] * uux[i] + Hx[i] * hux[i]
 }
-
-# that started at age 48 technically. We can redo, 
-# starting at age 50. And this time we'll really
-# emulate the structure of N so that we can directly
-# compare w Algebra approach
-
-HHx    <- rep(0, n)
-UUx    <- rep(0, n)
-HUx    <- rep(0, n)
-UHx    <- rep(0, n)
-HHx[1] <- interval
-UUx[1] <- interval
-
-for (i in 1:(n-1)){
-  # funny indexing accounts for shifting.
-  # ya this would be clearer in a tidy framework..
-  HHx[i + 1] <- HHx[i] * hhx[i+1] + HUx[i] * uhx[i+1]
-  HUx[i + 1] <- HHx[i] * hux[i+1] + HUx[i] * uux[i+1]
-  
-  UUx[i + 1] <- UUx[i] * uux[i+1] + UHx[i] * hux[i+1]
-  UHx[i + 1] <- UUx[i] * uhx[i+1] + UHx[i] * hhx[i+1]
-}
-Ux50 <- init["U"] * UUx[-n] + init["H"] * HUx[-n]
-Hx50 <- init["H"] * HHx[-n] + init["U"] * UHx[-n]
-dput(c(sum(Hx50),sum(Ux50)))
-
-# redo with no self-arrows, just because:
-# (equivalent)
-# Hx2 <- Hx * 0
-# Ux2 <- Ux * 0
-# Hx2[1] <- init[1] * interval
-# Ux2[1] <- init[2] * interval
-# 
-# for (i in 1:n){
-#   Hx2[i+1] <- Hx2[i] * (1 - hdx[i] - hux[i]) + Ux2[i] * uhx[i]
-#   Ux2[i+1] <- Ux2[i] * (1 - udx[i] - uhx[i]) + Hx2[i] * hux[i]
-# }
-# Hx - Hx2 # machine precision.. these are 0s
+sum(Hx)
 
 # FYI this is conditional on starting age 48 here, not 50.
 ages <- seq(48,110,by=2)

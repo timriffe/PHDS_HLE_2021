@@ -64,20 +64,20 @@ mcHLE <- new("markovchain",
 # Do this twice, and vary the size of N accordingly...
 
 # init, using prevalence
-N  <- 1e4
+N  <- 2e4
 Ns <- round(init * N)
 set.seed(2021)
 
 RHRS_H  <- replicate(Ns["H"],
-                     rmarkovchain(n = 30, 
+                     rmarkovchain(n = 31, 
                                   object = mcHLE, 
-                                  t0 = "50::H", 
+                                  t0 = "48::H", 
                                   parallel = TRUE)
 ) 
 RHRS_U  <- replicate(Ns["U"],
-                     rmarkovchain(n = 30, 
+                     rmarkovchain(n = 31, 
                                   object = mcHLE, 
-                                  t0 = "50::U", 
+                                  t0 = "48::U", 
                                   parallel = TRUE)
 ) 
 
@@ -91,7 +91,7 @@ RHRS                   <- cbind(rbind("H",RHRS_H), rbind("U",RHRS_U))
 RHRS_clean             <- gsub(".*:","",RHRS)
   dim(RHRS_clean)
   RHRS_clean[,1]
-a                    <- seq(50, 110, by = 2)
+a                    <- seq(48, 110, by = 2)
 rownames(RHRS_clean) <- a
 colnames(RHRS_clean) <- 1:ncol(RHRS_clean)
  

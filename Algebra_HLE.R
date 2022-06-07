@@ -47,8 +47,10 @@ U %>% View()
 # so far this is all matrix architecture, now we have 
 # the transient matrix, which we can transform to the 
 # fundamental matrix
-
-N <- U2N(U,  interval = 2)
+interval <- 2
+N <- U2N(U,  interval = interval) #- 
+  # subtract 1/2 of an interval from the start (optional)
+  #(diag(nrow(U)) * interval) / 2
 # (I - U) ^{-1} = solve(I - U)
 # This is where we stop with the algebra and move to 
 # tidyverse for book-keeping.
@@ -59,10 +61,9 @@ N <- U2N(U,  interval = 2)
 # we instead use tidyverse to grab what we need:
 N50 <-
   N %>% 
-  reshape2::melt(varnames = c("to","from"),
-       value.name = "time") %>% 
-  mutate(to = as.character(to),
-         from = as.character(from)) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("to") %>% 
+  pivot_longer(-to, names_to = "from", values_to = "time") %>% 
   separate(col = "to", 
            sep = "::",
            into = c("to","age2"),
@@ -71,9 +72,8 @@ N50 <-
            sep = "::",
            into = c("from","age1"),
            convert = TRUE) %>% 
-  filter(age1 == 50,
-         age2 > age1,
-         to != "D")
+  dplyr::filter(age1 == 48,
+         age2 >= age1)
 N50
 
 # calculate HLE and ULE from it:
